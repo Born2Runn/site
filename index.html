@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Born2Run - Défi Course</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-theme="dark">
+    <div class="app-container">
+        
+        <!-- EN-TÊTE MOBILE (Visible uniquement sur smartphone) -->
+        <div class="mobile-header">
+            <div class="logo"><i class="fa-solid fa-bolt"></i>Born2Run</div>
+            <div id="mobile-admin-status-badge" class="status-badge"><i class="fa-solid fa-lock"></i> Visiteur</div>
+        </div>
+
+        <!-- BARRE LATÉRALE / BARRE DE NAVIGATION BASSE (sur mobile) -->
+        <aside class="sidebar">
+            <div class="logo desktop-only">
+                <i class="fa-solid fa-bolt"></i> Born2Run
+            </div>
+            <ul class="nav-links">
+                <li id="nav-add-run" class="nav-admin-btn hidden" data-target="view-add-run">
+                    <a href="#">
+                        <i class="fa-solid fa-plus-circle"></i> 
+                        <span class="nav-text">Ajouter</span>
+                    </a>
+                </li>
+                <li class="active" data-target="view-leaderboard">
+                    <a href="#">
+                        <i class="fa-solid fa-trophy"></i> 
+                        <span class="nav-text">Classement</span>
+                    </a>
+                </li>
+                <li data-target="view-settings">
+                    <a href="#">
+                        <i class="fa-solid fa-gear"></i> 
+                        <span class="nav-text">Paramètres</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer desktop-only">
+                <p>Défi Hebdomadaire</p>
+                <p id="admin-status-badge" class="status-badge"><i class="fa-solid fa-lock"></i> Mode Visiteur</p>
+            </div>
+        </aside>
+
+        <!-- CONTENU PRINCIPAL -->
+        <main class="main-content">
+            
+            <!-- VUE 1 : CLASSEMENT -->
+            <div id="view-leaderboard" class="view active">
+                <header>
+                    <h1>Classement Général</h1>
+                    <p>Cumul des kilomètres et du temps pour chaque participant.</p>
+                </header>
+
+                <section class="card latest-session-section hidden" id="latest-session-card">
+                    <h2><i class="fa-solid fa-fire" style="color: #ff9f43;"></i> Dernière(s) course(s)</h2>
+                    <div id="latest-sessions-container" class="latest-sessions-grid">
+                        <!-- Injecté par JS -->
+                    </div>
+                </section>
+
+                <section class="card leaderboard-section">
+                    <h2><i class="fa-solid fa-medal"></i> Leaderboard</h2>
+                    <div class="table-container">
+                        <table id="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Position</th>
+                                    <th>Nom</th>
+                                    <th>Total Courses</th>
+                                    <th>Distance Totale</th>
+                                    <th>Temps Total</th>
+                                    <th>Allure Moyenne</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body">
+                                <!-- Injecté par JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="card history-section">
+                    <h2><i class="fa-solid fa-clock-rotate-left"></i> Historique des sessions</h2>
+                    <div class="table-container">
+                        <table id="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Participants</th>
+                                    <th>Distance</th>
+                                    <th>Temps</th>
+                                    <th>Allure</th>
+                                    <th class="admin-only hidden">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body">
+                                <!-- Injecté par JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- VUE 2 : AJOUTER UNE COURSE (Admin) -->
+            <div id="view-add-run" class="view hidden">
+                <header>
+                    <h1>Enregistrer une session</h1>
+                    <p>Sélectionnez les coureurs présents et indiquez les performances.</p>
+                </header>
+
+                <section class="card add-run-section">
+                    <form id="run-form" onsubmit="return false;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="run-date">Date de la course</label>
+                                <input type="date" id="run-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="run-distance">Distance du groupe (km)</label>
+                                <input type="number" id="run-distance" step="0.01" required placeholder="Ex: 5.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Temps du groupe</label>
+                                <div class="time-picker">
+                                    <div class="time-select-wrapper">
+                                        <select id="run-hours" required></select>
+                                        <span>h</span>
+                                    </div>
+                                    <div class="time-select-wrapper">
+                                        <select id="run-minutes" required></select>
+                                        <span>min</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group participants-group">
+                            <label>Participants présents</label>
+                            
+                            <div class="add-participant-wrapper" style="margin-bottom: 15px;">
+                                <input type="text" id="quick-add-runner" placeholder="Nouveau">
+                                <button type="button" id="btn-quick-add" class="btn-secondary">Ajouter</button>
+                            </div>
+
+                            <div id="selectable-runners-list" class="selectable-list">
+                                <!-- Injecté par JS -->
+                            </div>
+                        </div>
+
+                        <button type="button" id="submit-btn" class="btn-submit" style="margin-top: 15px;">Enregistrer la session</button>
+                    </form>
+                </section>
+            </div>
+
+            <!-- VUE 3 : PARAMÈTRES -->
+            <div id="view-settings" class="view hidden">
+                <header>
+                    <h1>Paramètres</h1>
+                    <p>Gérez l'affichage et l'administration.</p>
+                </header>
+                
+                <section class="card settings-card">
+                    <h2><i class="fa-solid fa-palette"></i> Apparence</h2>
+                    <div class="setting-item">
+                        <span>Thème de l'application</span>
+                        <button id="theme-toggle" class="btn-secondary">Mode Clair</button>
+                    </div>
+                </section>
+
+                <section class="card settings-card">
+                    <h2><i class="fa-solid fa-shield-halved"></i> Accès Administrateur</h2>
+                    <div id="admin-login-area" class="setting-item mobile-wrap">
+                        <input type="password" id="admin-key" placeholder="Clé admin">
+                        <button id="btn-login-admin" class="btn-submit">Déverrouiller</button>
+                    </div>
+                    
+                    <div id="admin-logout-area" class="setting-item hidden">
+                        <span style="color: var(--primary-color); font-weight:bold;"><i class="fa-solid fa-check"></i> Admin activé</span>
+                        <button id="btn-logout-admin" class="btn-cancel">Verrouiller</button>
+                    </div>
+                </section>
+
+                <section class="card settings-card admin-only hidden">
+                    <h2><i class="fa-solid fa-users"></i> Gérer les coureurs inscrits</h2>
+                    <p class="settings-desc">Ajoutez le groupe à l'avance pour qu'ils soient en "N/D" dans le classement.</p>
+                    
+                    <div class="add-participant-wrapper">
+                        <input type="text" id="new-runner-name" placeholder="Nom">
+                        <button type="button" id="btn-add-global-runner" class="btn-secondary">Ajouter</button>
+                    </div>
+                    <div id="global-runners-list" class="participants-list">
+                        <!-- Injecté par JS -->
+                    </div>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
